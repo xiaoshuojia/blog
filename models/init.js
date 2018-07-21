@@ -1,6 +1,8 @@
-// connect the DB
-var mongoose = require('mongoose');
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
 
-mongoose.connect('mongodb://192.168.1.2:32772/webapp', {
-  useMongoClient: true
-});
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+
+db.defaults({ posts: [], user: {}, count: 0 })
+  .write()

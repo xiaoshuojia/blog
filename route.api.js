@@ -1,14 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var PostModel = require('./models/post');
+var db = require('./models/post');
 
 /* GET posts list . */
 router.get('/posts/list', function(req, res, next) {
-  // res.send({title: 'posts'});
-  // res.render('posts', {title: 'posts'});
-  // 返回一个HTML页面，给一个对象，包括title和postslist
-  // res.render('posts', {title: "posts", PostsList: ['文章1', '文章2', '文章3']});
-  // 返回JSON对象 然后浏览器渲染
+  var id = 5;
+  // Find post by id
+  const post = db.get('posts')
+  .find({id: id})
+  .value();
+  console.log(`post.id: ${post.id}\n post.title: ${post.title}\n post.content: ${post.content}`);
   res.json({PostsList: ['文章1', '文章2', '文章3']});
 });
 
@@ -26,36 +28,33 @@ router.post('/posts', function(req, res, next){
     // 返回一个错误提示
     res.send({success: false, err: '标题或者内容不同为空'});
   }
-  // save the title and content
-  var post = new PostModel();
-  post.title = title;
-  post.content = content;
-  post.save(function(err, doc){
-    if (err){
-      next(err);
-      return;
-    }
-    res.json({post: doc});  // 返回新建的文章数据
-  });
+  var id = db.get('count').value();
+  console.log(`article id: ${id}`);
+  // Increment count
+  db.update('count', n => n + 1)
+    .write();
+
+  var newID = db.get('count').value();
+  console.log(`new ID: ${newID}`);
+  db.get('posts')
+  .push({ id: newID, title: title, content: content})
+  .write();
+
+  var post = db.get('posts')
+  .find({id: newID})
+  .value();
+  console.log(`post.id ${post.id}\n post.title: ${post.title}\n post.content: ${post.content} `);
+  res.json({post: post});
+
 });
 
 // get posts
 router.get('/posts', function(req, res, next){
   // Get posts from MongoDb
   console.log('Get posts from MongoDb');
-  PostModel.find({}, {}, function(err, posts){
-    console.log('find the posts');
-    if (err){
-      // res.json({success: false});
-      console.log('get posts page error ');
-      next(err);
-      return;
-    }
-    else {
-      console.log('posts:' + posts);
-      res.json({success: true, PostsList: posts});
-    }
-  });
+  var posts = db.get('posts').value();
+  console.log(`posts: ${posts}\n `);
+  res.json({success: true, PostsList: posts});
 });
 
 // get on specific article

@@ -1,13 +1,7 @@
-// create a new table for saving the article
-var mongoose = require('mongoose');
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
 
-var Schema = mongoose.Schema;
+const adapter = new FileSync('db.json')
+const db = low(adapter)
 
-var PostSchema = new Schema({
-  title: String,
-  content: String
-});
-
-var PostModel = mongoose.model('Post', PostSchema);
-
-module.exports = PostModel;
+module.exports = db;

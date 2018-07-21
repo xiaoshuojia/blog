@@ -29,7 +29,7 @@ var vm = new Vue({
         return response.data;
       })
       .then(function(data){
-        window.location = '/posts/show?id=' + data.post._id;
+        window.location = '/posts/show?id=' + data.post.id;
       })
       .catch(function(err){
         alert(err);

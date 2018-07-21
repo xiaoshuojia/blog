@@ -9,31 +9,32 @@
     <li><a href="/posts/create">新建</a></li>
   </ul>
 </div>
+<br>
 <!-- 文章显示和内容其实两者不相关，他们是不同的处理方式，一个是css，一个是关于内容 -->
-  <div class="container">
-    <div class="col-md-8 col-md-offset-2">
-      <div id="app">
 
-          <h1><%= title %></h1>
+  <div class="col-md-8 col-md-offset-2">
+    <div id="app">
 
-          <!-- <p v-for="item in PostsList">{{ item.title }}</p> -->
+        <h1>文章列表</h1>
 
-          <!-- 文章列表跳转过去，也就是每个文章列表都是超链接，链接到文章详情的页面 -->
-          <!-- <div v-for="item in PostsList">
-            <a v-bind:href="item.url" >{{ item.title }}</a>
-          </div> -->
+        <!-- <p v-for="item in PostsList">{{ item.title }}</p> -->
 
-          <!-- 使用list-group组件来显示文章 -->
-          <ul class="list-group" v-for="item in PostsList">
-            <li class="list-group-item">
-              <a v-bind:href="item.url">{{ item.title }}</a>
-            </li>
-          </ul>
+        <!-- 文章列表跳转过去，也就是每个文章列表都是超链接，链接到文章详情的页面 -->
+        <!-- <div v-for="item in PostsList">
+          <a v-bind:href="item.url" >{{ item.title }}</a>
+        </div> -->
+
+        <!-- 使用list-group组件来显示文章 -->
+        <ul class="list-group" v-for="item in PostsList">
+          <li class="list-group-item">
+            <a v-bind:href="item.url">{{ item.title }}</a>
+          </li>
+        </ul>
 
 
-        </div>
       </div>
-  </div>
+    </div>
+
 <script>
     var vm = new Vue({
         el: "#app",
@@ -51,7 +52,7 @@
 
                     // 箭头函数是将原来的额函数改为了箭头，其等价函数应该如下，亲测没毛病
                     vm.PostsList.forEach(function(element){
-                      element.url = '/posts/show?id=' + element._id;
+                      element.url = '/posts/show?id=' + element.id;
                     });
                     console.log(vm.PostsList);
                 })

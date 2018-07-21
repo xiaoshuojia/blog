@@ -4,6 +4,7 @@ var PostModel = require('./models/post');
 var marked = require('marked');
 var MarkdownIt = require('markdown-it');
 var md = new MarkdownIt();
+var db = require('./models/post');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -33,25 +34,17 @@ router.get('/posts/create', function(req, res, next){
 
 // GET the specific ariticle content
 router.get('/posts/show', function(req, res, next){
-  console.log("Get /posts/show specific ariticle detail");
-  var id = req.query.id;
-  // 这里的function第一个参数是错误，第二个就是我们查询得到的结果。
-  // PostModel.findOne({_id: id}, function(err, article){
-  //   res.render('show', {article});
-  // });
-  // 测试箭头函数
-  PostModel.findOne({_id: id}, (err, article) => {
-    // markdown 使用
-    // article.content = marked(article.content);
+  var searchid = req.query.id;
+  var id = Number(searchid);
 
-    if (err){
-      next(err);
-      return;
-    }
-    // 使用markdown-it渲染
-    article.content = md.render(article.content);
-    res.render('show', {article});
-  });
+  console.log(`searchidtype: ${typeof(searchid)} \nsearchid: ${searchid}\n idtype: ${typeof(id)} id: ${id}`);
+  var post = db.get('posts')
+  .find({id: id})
+  .value();
+  console.log(`post.id ${post.id}\n post.title: ${post.title}\n post.content: ${post.content} `);
+  // article.content = md.render(article.content);
+  res.render('show', {article: post});
+
 });
 
 // get edit page
