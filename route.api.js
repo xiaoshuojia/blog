@@ -62,16 +62,15 @@ router.get('/posts/:id', function(req, res, next){
   // var id = req.query.id;
   var id = req.params.id;
   console.log('post/:id = ', id);
-  PostModel.findOne({_id: id}, function(err, post){
-    if (err){
-      console.log('can not find the article');
-      // res.json({success: false});
-      next(err);
-      return;
-    };
-    console.log('find the article');
-    res.json({success: true, post});
-  });
+  var searchId = Number(id);
+
+  // console.log(`searchidtype: ${typeof(searchid)} \nsearchid: ${searchid}\n idtype: ${typeof(id)} id: ${id}`);
+  var post = db.get('posts')
+  .find({id: searchId})
+  .value();
+
+  res.json({success: true, post});
+
 });
 
 // post edit ariticle
@@ -79,15 +78,23 @@ router.patch('/posts', function(req, res, next){
   var id = req.body.id;
   var title = req.body.title;
   var content = req.body.content;
+  console.log(`id: ${id}\n title: ${title}\n content: ${content}`);
+  var searchId = Number(id);
+  db.get('posts')
+  .find({ id: searchId })
+  .assign({ title: title, content: content})
+  .write()
 
-  PostModel.findOneAndUpdate({_id: id}, {title, content}, function(err){
-    if (err){
-      // res.json({success: false});
-      next(err);
-      return ;
-    }
-    res.json({success: true});
-  });
+  console.log(`debug 2`);
+  res.json({success: true});
+  // PostModel.findOneAndUpdate({_id: id}, {title, content}, function(err){
+  //   if (err){
+  //     // res.json({success: false});
+  //     next(err);
+  //     return ;
+  //   }
+  //   res.json({success: true});
+  // });
 });
 
 module.exports = router;
